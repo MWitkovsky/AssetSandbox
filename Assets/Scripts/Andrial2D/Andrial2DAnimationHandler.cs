@@ -7,13 +7,14 @@ public class Andrial2DAnimationHandler : MonoBehaviour {
     //Sword info
     private GameObject sword, swordSwipe;
     private Transform[] swordPositions = new Transform[3];
-    public float swipeVisibleTime = 0.025f;
-    private float swipeVisibleTimer;
+    [SerializeField] private float swipeVisibleTime = 0.025f;
+    private float swipeVisibleTimer; 
     private bool showSwipe;
 
     //Animation info
     private Animator anim;
     private SpriteRenderer spriteRenderer;
+    private bool hitEnemy;
 
     //Animation Triggers
     private readonly string attackTrigger = "Attack";
@@ -48,13 +49,18 @@ public class Andrial2DAnimationHandler : MonoBehaviour {
 	}
 	
 	void Update () {
-		if(CanAttack() && Input.GetKeyDown(KeyCode.S))
+        UpdateSwordGraphics();
+    }
+
+    public bool StartAttackAnim()
+    {
+        if (CanAttack())
         {
             anim.SetTrigger(attackTrigger);
             showSwipe = true;
-        }  
-
-        UpdateSwordGraphics();
+            return true;
+        }
+        return false;
     }
 
     private void UpdateSwordGraphics()
@@ -91,10 +97,16 @@ public class Andrial2DAnimationHandler : MonoBehaviour {
 
     private bool CanAttack()
     {
-        if(!anim.GetCurrentAnimatorStateInfo(0).IsName(attackTrigger))
+        if((!anim.GetCurrentAnimatorStateInfo(0).IsName(attackTrigger) && !showSwipe) || hitEnemy)
         {
             return true;
         }
         return false;
+    }
+
+    //Getters and Setters
+    public void SetHitEnemy(bool hitEnemy)
+    {
+        this.hitEnemy = hitEnemy;
     }
 }
